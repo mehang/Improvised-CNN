@@ -28,7 +28,7 @@ cl1 = Conv2D(64, (9,9), strides=(2,2), input_shape=input_dim,
              activation='relu')(input_img)
 
 # Pooling and Batch normalization
-pl2 = MaxPooling2D(pool_size=(2,2))(cl1)
+pl2 = MaxPooling2D(pool_size=(2,2), strides=(2,2))(cl1)
 bnl3 = BatchNormalization()(pl2)
 
 # Add second layer of convolutional layer
