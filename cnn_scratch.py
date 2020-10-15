@@ -1,6 +1,7 @@
 import numpy as np
 
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 
 from tensorflow.keras.datasets import cifar10
 from tensorflow.keras.utils import to_categorical
@@ -9,6 +10,7 @@ from tensorflow.keras.layers import Input, Dense, Dropout, BatchNormalization
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import RMSprop
 from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping
+from sklearn.preprocessing import MinMaxScaler
 
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
@@ -66,7 +68,30 @@ stop_alg = EarlyStopping(monitor='val_loss', patience=35,
 hist = classifier.fit(x_train, y_train, batch_size=100,
                       epochs=1000, callbacks=[stop_alg, reduce_lr],
                       shuffle=True, validation_data=(x_test, y_test))
-classifier.save_weights("cnn.hdf5")
+# classifier.save_weights("cnn.hdf5")
+
+classifier.load_weights("cnn.hdf5")
+
+cnnl1 = classifier.layers[1].name
+W = classifier.get_layer(name=cnnl1).get_weights()[0]
+wshape = W.shape
+scaler = MinMaxScaler()
+scaler.fit(W.reshape(-1,1))
+W = scaler.transform(W.reshape(-1,1))
+W = W.reshape(wshape)
+
+
+fig, axs = plt.subplots(8,8, figsize=(12,12))
+fig.subplots_adjust(hspace=.01, wspace=.01)
+fig.patch.set_facecolor('black')
+axs = axs.ravel()
+for i in range(W.shape[-1]):
+    h = np.reshape(W[:,:,:,i], (9,9,3))
+    axs[i].imshow(h)
+    axs[i].axis('off')
+    # axs[i].set_title('Filter ' + str(i))
+
+plt.show()
 
 
 
