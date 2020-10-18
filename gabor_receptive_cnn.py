@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
+
 from tensorflow.keras.datasets import cifar10
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten
@@ -13,9 +14,20 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping
 from sklearn.model_selection import train_test_split
 
 from itertools import product
+import math
 
 import cv2
 import random
+
+
+def calc_gabor(x,y,theta, lambd, sigma, psi, gamma):
+    x_rot = x*math.cos(theta) + y*math.sin(theta)
+    y_rot = -x*math.sin(theta) + y*math.cos(theta)
+    sigma_x = sigma
+    sigma_y = sigma/gamma
+
+    g = (1/(2*math.pi*sigma_x*sigma_y))*math.exp((x_rot/sigma_x)**2+(y_rot/sigma_y)**2) * math.cos(2*math.pi*lambd + psi)
+    return g
 
 
 def get_gabor_filters(filters_num, channels):
