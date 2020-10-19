@@ -80,70 +80,70 @@ receptive_filters = get_gabor_filters(64,1)
 
 display_filters(receptive_filters)
 
-# (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-# x_train = x_train.astype('float32')/255
-# x_test = x_test.astype('float32')/255
-#
-# y_train = to_categorical(y_train, num_classes=10)
-# y_test = to_categorical(y_test, num_classes=10)
-#
-#
-# x_train, _, y_train, _ = train_test_split(x_train,y_train, train_size=0.5, stratify=y_train)
-# x_test, _, y_test, _ = train_test_split(x_test, y_test, test_size=0.5, stratify=y_test)
-#
-# input_dim = (32,32,3)
-# input_img = Input(shape=input_dim)
-#
-# cl1_template = Conv2D(64, kernel_size=(3,3), strides=(1,1), padding='same',
-#              input_shape=input_dim, activation='relu')
-# cl1 = cl1_template(input_img)
-# # settings the initial filters to gabor filters
-# receptive_weights = cl1_template.get_weights()
-# # since the order of filter is channel last (3,3, channels, num_filters) so
-# # adjusting our gabor filters size according to that format
-# receptive_weights[0] = np.moveaxis(receptive_filters, [0,1],[3,2])
-# cl1_template.set_weights(receptive_weights)
-#
-# pl1 = MaxPooling2D(pool_size=(2,2), strides=(2,2))(cl1)
-# cl2 = Conv2D(128, kernel_size=(3,3), strides=(1,1), padding='same',
-#              activation='relu')(pl1)
-# pl2 = MaxPooling2D(pool_size=(2,2), strides=(2,2))(cl2)
-#
-# cl3 = Conv2D(256, kernel_size=(3,3), strides=(1,1), padding='same',
-#              activation='relu')(pl2)
-# pl3 = MaxPooling2D(pool_size=(2,2), strides=(2,2))(cl3)
-#
-# cl4 = Conv2D(512, kernel_size=(3,3), strides=(1,1), padding='same',
-#              activation='relu')(pl3)
-# pl4 = MaxPooling2D(pool_size=(2,2), strides=(2,2))(cl4)
-#
-# cl5 = Conv2D(512, kernel_size=(3,3), strides=(1,1), padding='same',
-#              activation='relu')(pl4)
-# pl5 = MaxPooling2D(pool_size=(2,2), strides=(2,2))(cl5)
-#
-# flat = Flatten()(pl5)
-#
-# fc6 = Dense(units=4096, activation='relu')(flat)
-# fc7 = Dense(units=4096, activation='relu')(fc6)
-#
-# output = Dense(units=10, activation='softmax')(fc7)
-#
-# classifier = Model(input_img, output)
-#
-# opt = RMSprop(learning_rate=0.001)
-# classifier.compile(optimizer=opt, loss ='binary_crossentropy',
-#                    metrics = ['accuracy'])
-# print(classifier.summary())
-# reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5,
-#                               patience=10, min_delta=1e-4,
-#                               mode='min', verbose=1)
-# stop_alg = EarlyStopping(monitor='val_loss', patience=35,
-#                          restore_best_weights=True, verbose=1)
-#
-# hist = classifier.fit(x_train, y_train, batch_size=100,
-#                       epochs=1000, callbacks=[stop_alg, reduce_lr],
-#                       shuffle=True, validation_data=(x_test, y_test))
-# classifier.save_weights("cnn.hdf5")
-#
-#
-#
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
+x_train = x_train.astype('float32')/255
+x_test = x_test.astype('float32')/255
+
+y_train = to_categorical(y_train, num_classes=10)
+y_test = to_categorical(y_test, num_classes=10)
+
+
+x_train, _, y_train, _ = train_test_split(x_train,y_train, train_size=0.5, stratify=y_train)
+x_test, _, y_test, _ = train_test_split(x_test, y_test, test_size=0.5, stratify=y_test)
+
+input_dim = (32,32,3)
+input_img = Input(shape=input_dim)
+
+cl1_template = Conv2D(64, kernel_size=(3,3), strides=(1,1), padding='same',
+             input_shape=input_dim, activation='relu')
+cl1 = cl1_template(input_img)
+# settings the initial filters to gabor filters
+receptive_weights = cl1_template.get_weights()
+# since the order of filter is channel last (3,3, channels, num_filters) so
+# adjusting our gabor filters size according to that format
+receptive_weights[0] = np.moveaxis(receptive_filters, [0,1],[3,2])
+cl1_template.set_weights(receptive_weights)
+
+pl1 = MaxPooling2D(pool_size=(2,2), strides=(2,2))(cl1)
+cl2 = Conv2D(128, kernel_size=(3,3), strides=(1,1), padding='same',
+             activation='relu')(pl1)
+pl2 = MaxPooling2D(pool_size=(2,2), strides=(2,2))(cl2)
+
+cl3 = Conv2D(256, kernel_size=(3,3), strides=(1,1), padding='same',
+             activation='relu')(pl2)
+pl3 = MaxPooling2D(pool_size=(2,2), strides=(2,2))(cl3)
+
+cl4 = Conv2D(512, kernel_size=(3,3), strides=(1,1), padding='same',
+             activation='relu')(pl3)
+pl4 = MaxPooling2D(pool_size=(2,2), strides=(2,2))(cl4)
+
+cl5 = Conv2D(512, kernel_size=(3,3), strides=(1,1), padding='same',
+             activation='relu')(pl4)
+pl5 = MaxPooling2D(pool_size=(2,2), strides=(2,2))(cl5)
+
+flat = Flatten()(pl5)
+
+fc6 = Dense(units=4096, activation='relu')(flat)
+fc7 = Dense(units=4096, activation='relu')(fc6)
+
+output = Dense(units=10, activation='softmax')(fc7)
+
+classifier = Model(input_img, output)
+
+opt = RMSprop(learning_rate=0.001)
+classifier.compile(optimizer=opt, loss ='binary_crossentropy',
+                   metrics = ['accuracy'])
+print(classifier.summary())
+reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5,
+                              patience=10, min_delta=1e-4,
+                              mode='min', verbose=1)
+stop_alg = EarlyStopping(monitor='val_loss', patience=35,
+                         restore_best_weights=True, verbose=1)
+
+hist = classifier.fit(x_train, y_train, batch_size=100,
+                      epochs=1000, callbacks=[stop_alg, reduce_lr],
+                      shuffle=True, validation_data=(x_test, y_test))
+classifier.save_weights("gabor_receptive_cnn.hdf5")
+
+
+
