@@ -6,7 +6,6 @@ import numpy as np
 
 import math
 
-
 def get_gabor_filters(inchannels, outchannels, kernel_size=(3, 3)):
     delta = 1e-4
     freqs = (math.pi / 2) * math.sqrt(2) ** (-np.random.randint(0, 5, (outchannels, inchannels)))
